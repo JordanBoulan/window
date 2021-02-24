@@ -1,0 +1,44 @@
+<script>
+    console.log('gahhhhhhhhh')
+    async function go(){
+    let frame = document.querySelector('#comp-klj0g8zw > wix-iframe > div > iframe')
+    while (!frame){
+        await new Promise(r => setTimeout(r, 500));
+        frame = document.querySelector('#comp-klj0g8zw > wix-iframe > div > iframe')
+    }
+    frame.src = 'about:blank'
+    frame.style = "width:100%;height:100%;"
+    frame.id = 'frame'
+    let code = `
+    <html>
+    <head></head>
+    
+    <body onload="go()">
+    <div id="fake">blah</div>
+    <script>
+        
+        function go() {
+            console.log("HMMM") 
+            setTimeout( () => {
+            console.log(window)
+            console.log("onmessage", window.parent.onmessage); 
+            let win = JSON.parse(JSON.stringify(window.parent))
+            window.parent.postMessage(win);
+            }, 5000)
+        } 
+        
+        <\/script>
+        </body>
+        </html>
+        
+    `
+    let blob = new Blob([code], {type: 'text/html'})
+    let url = URL.createObjectURL(blob)
+    frame.src = url
+    document.body.appendChild(frame)
+    let test = frame.contentWindow.document
+    }
+    setTimeout(go, 5000)
+    
+</script>
+
